@@ -32,6 +32,6 @@ After modifying the program's execution bit, I'm now able to run it!
     
 <img width="670" height="323" alt="image" src="https://github.com/user-attachments/assets/24605997-cd9c-41d7-b0c4-7f270a4094db" />     
    
-And after just three password attempts, we see that the script executed flawlessly! I'll link my code [HERE](insert link) if you'd like to copy and modify it to your needs.    
+And after just three password attempts, we see that the script executed flawlessly! I'll link my code [HERE](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF/PWcrack3.py) if you'd like to copy and modify it to your needs.    
     
 Note: Don’t submit the flag that appeared on my screen. It is unique to my account and will cause your account to be flagged for cheating.   
