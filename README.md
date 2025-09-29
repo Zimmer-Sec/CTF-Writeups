@@ -2,7 +2,7 @@
 
 ### PicoCTF 
 * [Forensics](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF-Forensics.md)
-* To come...
+* [General](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF-General.md)
 
 ### Hack The Box
 * To come...
