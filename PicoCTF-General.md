@@ -1,6 +1,7 @@
 # PicoCTF General Skills Writeups:
 
 ### Easy:
+* [repetitions (encoding)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF/repetitions.md)
 
 ### Medium:
 * [PW Crack 3 (python)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF/PW%20Crack%203.md)
