@@ -5,7 +5,7 @@
 * [General](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/PicoCTF-General.md)
 
 ### Hack The Box
-* To come...
+* [Pwn List](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB-List.md)
 
 ### TryHackMe
 * To come...
