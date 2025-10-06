@@ -4,3 +4,4 @@
 * [Fawn (FTP)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Fawn.md)
 * [Dancing (SMB)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Dancing.md)
 * [Redeemer (Redis)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Redeemer.md)
+* [Explosion (RDP)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Explosion.md)
