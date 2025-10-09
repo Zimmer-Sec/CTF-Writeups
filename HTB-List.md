@@ -13,4 +13,4 @@
 ## Starting Point - Tier 1
 * [Appointment (SQLi)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Appointment.md)
 * [Sequel (SQL)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Sequel.md)
-* 
+* [Crocodile (FTP/HTTP)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Crocodile.md)
