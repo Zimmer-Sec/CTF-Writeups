@@ -39,7 +39,51 @@ Nothing out of the ordinary here. Styling sheets for css.
 
 <img width="943" height="626" alt="image" src="https://github.com/user-attachments/assets/1535d9b5-f71d-42f0-b43f-3783d1eb1c0f" /> 
 
-/inc/ included nothing besides some jquery and font libraries.
+/inc/ included nothing besides some jquery and font libraries. So what... we have an IP redirecting us to a domain that we can't resolve while also hosting a backend full of webpage resources? This smells like there's an issue with the `unika.htb` domain. If it's supposed to resolve, maybe our system just doesn't know how to. Let's document it in our /etc/hosts file so that the domain will resolve to the Responder box's IP address and load those backend resources.  
+
+<img width="506" height="143" alt="image" src="https://github.com/user-attachments/assets/0cda8836-1387-4515-9cc8-f3e95e65e9a2" />  
+
+<img width="1272" height="972" alt="image" src="https://github.com/user-attachments/assets/d3966914-a652-455b-b7d7-5c84859ad021" />  
+
+Just as expected. It loaded the images from the /img directory and contains all the javascript functionality outlined in the /js and /inc directories! Now, let's poke around and see what this site offers.
+<img width="1276" height="1161" alt="image" src="https://github.com/user-attachments/assets/1ad99f16-6425-4567-afdd-fe7f476f62a5" />  
+ 
+The site is a pretty static page with beautifully scrolling photos and designs. There's a customer feedback form that appears to do nothing at the bottom. All the buttons at the top drop us down to sections of the main scrolling page... except one.
+
+The EN button gives a little pop-out box, allowing you to select French (FR) or German (DE) language packs to translate the page.
+
+<img width="1274" height="825" alt="image" src="https://github.com/user-attachments/assets/7e29ff79-61d5-4a18-96ea-ec7e764f13a8" />   
+
+Whats interesting about that is the url. I see that it changes to include a `?page=[new page file.html]` at the end. Lets try monkeying with this file name. I'll trying throwing in flag.txt for shits and giggles.
+
+<img width="1132" height="229" alt="image" src="https://github.com/user-attachments/assets/5bd11131-3d9b-4660-8eb8-3ddbdec0b22d" />   
+
+included([FILE NAME])... `C:\xampp\htdocs\index.php` Does this service just let us search/navigate the windows file system? 
+
+So what do we know? 
+* This server is letting us attempt to include files on the page based on the url parameter `?page=`
+* We're located in C:\xampp\htdocs\ [index.php]
+* This web server is an Apache / PHP server.
+* The underlying OS is Windows.
+
+Let's google for some common xampp apache file paths of interest. After some searching, I found a wordlist already prepped that contained the C:\xampp\apache\) directory: 
+
+<img width="977" height="575" alt="image" src="https://github.com/user-attachments/assets/018a1f04-3564-4955-82d1-f06d857cf091" />  
+
+Let's begin throwing these after the `?page=..` entry...
+
+<img width="1272" height="822" alt="image" src="https://github.com/user-attachments/assets/a84d27b8-9b00-4e11-a4fa-2766a2b5328f" />     
+
+`..\apache\conf\httpd.conf` worked! This gives us the server configuration file. Lots to take in here. Let's see if we can go back past the C:\xampp\ folder... to C:\
+
+<img width="999" height="222" alt="image" src="https://github.com/user-attachments/assets/1a7768d7-f4aa-44bb-a6cf-7a6d8e0d30c9" />  
+
+Oh we can try searching anywhere on the NTFS and maybe more.
+
+
+
+
+
 
 
 
