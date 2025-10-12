@@ -135,6 +135,9 @@ Just like that, we got a Powershell console on the WinRM service. Let's go ahead
 
 <img width="768" height="1098" alt="image" src="https://github.com/user-attachments/assets/80275f79-897d-466a-a68c-61cfbc9d5d42" />   
 
+<img width="457" height="63" alt="image" src="https://github.com/user-attachments/assets/6e641655-72dc-4b5c-8047-288b878b9f43" />   
+
+<img width="558" height="516" alt="responder" src="https://github.com/user-attachments/assets/9601ff77-0804-4397-9796-aab8ad44d81b" />   
 
 
 Note: Don’t submit the flag that appeared on my screen. It is unique to my account and will cause your account to be flagged for cheating.       
