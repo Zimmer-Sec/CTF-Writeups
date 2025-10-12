@@ -14,3 +14,4 @@
 * [Appointment (SQLi)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Appointment.md)
 * [Sequel (SQL)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Sequel.md)
 * [Crocodile (FTP/HTTP)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Crocodile.md)
+* [Responder (File Inclusion/NTLMv2 Hash Cracking)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Responder.md)
