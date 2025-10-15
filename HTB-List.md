@@ -15,3 +15,4 @@
 * [Sequel (SQL)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Sequel.md)
 * [Crocodile (FTP/HTTP)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Crocodile.md)
 * [Responder (File Inclusion/NTLMv2 Hash Cracking)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Responder.md)
+* [Three (Web VHosts, S3, PHP Web Shell, Reverse Interactive Shell)](https://github.com/Zimmer-Sec/CTF-Writeups/blob/main/HTB/Three.md)
