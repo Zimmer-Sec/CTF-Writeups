@@ -1,7 +1,7 @@
-## Name: Three   //   Difficulty: Very Easy   //   Topic: S3 Reverse Shell    
+## Name: Three   //   Difficulty: Very Easy   //   Topic: Web Virtual Hosting, S3, PHP Web Shell, Reverse Shell    
 #### By: Kyle Zimmer    
        
-**Overview: **     
+**Overview: During this challenge, I was able to find a web server with a few virtual routes to other subdomains discovered through fuzzing. After attempting to access them, one stood out, providing the status of a running s3 bucket backend. I then used the AWScli utility to interact with it, finding out it didn't check the provided credentials... allowing me to list and cp files to the backend of the web server. I used this capability to upload a simple php web shell that'd allow me to launch commands as the web server. Using the web shell, I had the server reach out and grab and execute a bash script that called back to a netcat listener on my system, giving me an interactive bash shell on the server... allowing me to traverse the backend file system in its entirety.**     
 
 <img width="267" height="103" alt="image" src="https://github.com/user-attachments/assets/604ce017-f0f4-4e51-a528-cabe5b2a6566" />    
 
